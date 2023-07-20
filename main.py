@@ -5,6 +5,7 @@ vid = cv2.VideoCapture(0)
 
 while True:
     ret, frame = vid.read()
+    # frame = cv2.imread('shapes.png')
 
     frame = cv2.medianBlur(frame, 5)
     # converting image into grayscale image
@@ -18,31 +19,23 @@ while True:
     # using a findContours() function
     contours, _ = cv2.findContours(
         threshold, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
-    largest_contours = []
+    largest_contours = contours = sorted(contours, key=lambda x: cv2.contourArea(
+        x), reverse=True)  # Sort contours by area, largest to smallest
 
-    areas = {}
+    """areas = {}
     for i in range(len(contours)):
         areas[i] = cv2.contourArea(contours[i])
     largest_areas = dict(sorted(areas.items(), key=lambda item: item[1]))
     keys = list(reversed(largest_areas.keys()))
 
-    for i in range(10):
+    for i in range(1, 11):
         if i >= len(largest_areas):
             break
-        largest_contours.append(contours[keys[i]])
-
-    """if len(contours) > 1:
-        largest_contours = [max(contours, key=cv2.contourArea)]"""
-
-    """if len(contours) > 10:
-        for i in range(10):
-            largest = max(contours, key=cv2.contourArea)
-            largest_contours.append(largest)
-            index = contours.index(largest)
-            del contours[index]"""
+        largest_contours.append(contours[keys[i]])"""
 
     i = 0
 
+    # for contour in contours:
     for contour in largest_contours:
         # cv2.approxPloyDP() function to approximate the shape
         approx = cv2.approxPolyDP(
@@ -60,26 +53,6 @@ while True:
             # putting shape name at center of each shape
             cv2.putText(frame, str(len(approx)), (x, y),
                         cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 255, 255), 2)
-
-            """if len(approx) == 3:
-                cv2.putText(frame, 'Triangle', (x, y),
-                            cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 255, 255), 2)
-
-            elif len(approx) == 4:
-                cv2.putText(frame, 'Quadrilateral', (x, y),
-                            cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 255, 255), 2)
-
-            elif len(approx) == 5:
-                cv2.putText(frame, 'Pentagon', (x, y),
-                            cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 255, 255), 2)
-
-            elif len(approx) == 6:
-                cv2.putText(frame, 'Hexagon', (x, y),
-                            cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 255, 255), 2)
-
-            else:
-                cv2.putText(frame, 'Circle', (x, y),
-                            cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 255, 255), 2)"""
 
     cv2.imshow('frame', frame)
 
