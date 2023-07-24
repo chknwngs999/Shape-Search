@@ -19,8 +19,14 @@ while True:
     # using a findContours() function
     contours, _ = cv2.findContours(
         threshold, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+
+    # Sort contours by area, largest to smallest, and filter out small areas
     largest_contours = contours = sorted(contours, key=lambda x: cv2.contourArea(
-        x), reverse=True)  # Sort contours by area, largest to smallest
+        x), reverse=True)
+    for i in range(len(largest_contours)):
+        if cv2.contourArea(largest_contours[i]) <= 15:
+            largest_contours = largest_contours[:i]
+            break
 
     """areas = {}
     for i in range(len(contours)):
