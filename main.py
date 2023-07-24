@@ -5,9 +5,8 @@ vid = cv2.VideoCapture(0)
 
 while True:
     ret, frame = vid.read()
-    # frame = cv2.imread('shapes.png')
 
-    frame = cv2.medianBlur(frame, 5)
+    frame = cv2.medianBlur(frame, 7)
     # converting image into grayscale image
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
@@ -21,23 +20,13 @@ while True:
         threshold, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
 
     # Sort contours by area, largest to smallest, and filter out small areas
+
     largest_contours = contours = sorted(contours, key=lambda x: cv2.contourArea(
         x), reverse=True)
     for i in range(len(largest_contours)):
         if cv2.contourArea(largest_contours[i]) <= 15:
-            largest_contours = largest_contours[:i]
+            largest_contours = largest_contours[1:i]
             break
-
-    """areas = {}
-    for i in range(len(contours)):
-        areas[i] = cv2.contourArea(contours[i])
-    largest_areas = dict(sorted(areas.items(), key=lambda item: item[1]))
-    keys = list(reversed(largest_areas.keys()))
-
-    for i in range(1, 11):
-        if i >= len(largest_areas):
-            break
-        largest_contours.append(contours[keys[i]])"""
 
     i = 0
 
