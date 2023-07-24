@@ -6,6 +6,7 @@ vid = cv2.VideoCapture(0)
 while True:
     ret, frame = vid.read()
     # frame = cv2.medianBlur(frame, 7)
+    frame = cv2.bilateralFilter(frame, 9, 75, 75)
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
     _, threshold = cv2.threshold(
@@ -28,11 +29,12 @@ while True:
     # for contour in contours:
     for contour in largest_contours:
         # cv2.approxPloyDP() function to approximate the shape
-        approx = cv2.approxPolyDP(
+        approx_sides = cv2.approxPolyDP(
             contour, 0.02 * cv2.arcLength(contour, True), True)
 
         # filter for quadrilaterals
-        if len(approx) == 4:
+        filter_shapes = [3, 4, 5]
+        if len(approx_sides) in filter_shapes:
             # using drawContours() function
             cv2.drawContours(frame, [contour], 0, (0, 0, 255), 3)
 
@@ -43,7 +45,7 @@ while True:
                 y = int(M['m01']/M['m00'])
 
                 # putting shape name at center of each shape
-                cv2.putText(frame, str(len(approx)), (x, y),
+                cv2.putText(frame, str(len(approx_sides)), (x, y),
                             cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 255, 255), 2)
 
     cv2.imshow('frame', frame)
