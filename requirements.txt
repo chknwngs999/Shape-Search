@@ -1,0 +1,5 @@
+Flask==2.3.2
+matplotlib==3.7.1
+numpy==1.23.5
+opencv_python==4.7.0.72
+pyserial==3.4
