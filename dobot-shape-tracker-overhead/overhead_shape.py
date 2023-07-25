@@ -238,10 +238,7 @@ def grab():
     device.grip(True)
     time.sleep(1)
     device.move_to(x=x, y=y, z=15, r=r)
-    if color % 2 == 0:  # if block is red, rotate j1 to 80 deg
-        device.rotate_joint(j1=80, j2=30, j3=0, j4=0)
-    if color % 2 == 1:  # if block is blue, rotate j1 to 70 deg
-        device.rotate_joint(j1=70, j2=30, j3=0, j4=0)
+    device.rotate_joint(j1=80, j2=30, j3=0, j4=0)
     time.sleep(1)
     device.grip(False)
     time.sleep(1)
