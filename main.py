@@ -1,3 +1,6 @@
+# customizing - comment/uncomment medianBlur/bilateralFilter
+#
+
 import cv2
 import numpy as np
 
@@ -11,8 +14,8 @@ while True:
 
     _, threshold = cv2.threshold(
         gray, 127, 255, cv2.THRESH_BINARY, cv2.ADAPTIVE_THRESH_GAUSSIAN_C)
-    # threshold = cv2.adaptiveThreshold(
-    #    gray, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, 11, 2)
+    """threshold = cv2.adaptiveThreshold(
+        gray, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, 11, 2)"""
 
     # using a findContours() function
     contours, _ = cv2.findContours(
@@ -22,7 +25,7 @@ while True:
     largest_contours = contours = sorted(contours, key=lambda x: cv2.contourArea(
         x), reverse=True)
     for i in range(len(largest_contours)):
-        if cv2.contourArea(largest_contours[i]) <= 15:
+        if cv2.contourArea(largest_contours[i]) <= 20:
             largest_contours = largest_contours[1:i]
             break
 
@@ -33,10 +36,11 @@ while True:
             contour, 0.02 * cv2.arcLength(contour, True), True)
 
         # filter for quadrilaterals
-        filter_shapes = [3, 4, 5]
+        filter_shapes = [4]
         if len(approx_sides) in filter_shapes:
             # using drawContours() function
             cv2.drawContours(frame, [contour], 0, (0, 0, 255), 3)
+            # cv2.drawContours(threshold, [contour], 0, (0, 0, 255), 3)
 
             # finding center point of shape
             M = cv2.moments(contour)
@@ -49,8 +53,10 @@ while True:
                             cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 255, 255), 2)
 
     cv2.imshow('frame', frame)
+    """cv2.imshow('gray', gray)
+    cv2.imshow('threshold', threshold)"""
 
-    if cv2.waitKey(1) == 27:
+    if cv2.waitKey(33) == 27:
         break
 
 vid.release()
