@@ -125,6 +125,7 @@ def generate_frames(mask: "bool" = False):
         if not success:
             break
         else:
+            frame = cv2.bilateralFilter(frame, 9, 75, 75)
             gray_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
             _, threshold = cv2.threshold(
@@ -133,7 +134,14 @@ def generate_frames(mask: "bool" = False):
                 threshold, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
             contours = sorted(contours, key=lambda x: cv2.contourArea(
                 x), reverse=True)[1:]  # Sort contours by area, largest to smallest, remove full screen contour
-
+            for c in range(len(contours)):
+                if cv2.contourArea(contours[c]) <= 20:
+                    contours = contours[1:c]
+                    break
+            for c in range(len(contours)):
+                if cv2.contourArea(contours[c]) <= 200:
+                    contours = contours[c:]
+                    break
             # Guiding Quesion 1
             # Establish priority for "large" contours which are closest to center
             try:
@@ -145,18 +153,21 @@ def generate_frames(mask: "bool" = False):
             error = 0.2
             largeContourPairs = []
             for contour in contours:  # Compile large contours
-                area = cv2.contourArea(contour)
-                if area <= maxArea + maxArea and area >= maxArea - maxArea:  # If contour is within area boundaries
-                    (x, y, w, h) = cv2.boundingRect(contour)
-                    # middle line must be int since pixels are ints
-                    x_medium = int((x + x + w) / 2)
-                    y_medium = int((y + y + h) / 2)
-                    # 2d distance calc for object centroid to center of screen
-                    dist = np.sqrt(np.power(x_medium - x_center, 2) +
-                                   np.power(y_medium - old_y_center, 2))
-                    # append a contour, dist pair
-                    largeContourPairs.append((contour, dist))
-                    found = False
+                approx_sides = cv2.approxPolyDP(
+                    contour, 0.02 * cv2.arcLength(contour, True), True)
+                if len(approx_sides) == 4:
+                    area = cv2.contourArea(contour)
+                    if area <= maxArea + maxArea and area >= maxArea - maxArea:  # If contour is within area boundaries
+                        (x, y, w, h) = cv2.boundingRect(contour)
+                        # middle line must be int since pixels are ints
+                        x_medium = int((x + x + w) / 2)
+                        y_medium = int((y + y + h) / 2)
+                        # 2d distance calc for object centroid to center of screen
+                        dist = np.sqrt(np.power(x_medium - x_center, 2) +
+                                       np.power(y_medium - old_y_center, 2))
+                        # append a contour, dist pair
+                        largeContourPairs.append((contour, dist))
+                        found = False
             largeContourPairs = sorted(
                 largeContourPairs, key=lambda largeContourPairs: largeContourPairs[1])  # Sort by dist
             # Now create crosshair to home in on object
