@@ -110,6 +110,9 @@ def generate_frames(mask: "bool" = False):
         if not success:
             break
         else:
+            frame = cv2.blur(frame, (3, 3))
+            # crops frames so that top of mat can easily be adjusted to fit snugly in frame
+            frame = frame[5:, 63:287]
             frame = cv2.bilateralFilter(frame, 9, 75, 75)
             gray_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
@@ -164,6 +167,7 @@ def generate_frames(mask: "bool" = False):
                 x_medium = int((x + x + w) / 2)
                 y_medium = int((y + y + h) / 2)
                 # 2d distance calc from object centroid to bottom center of screen
+                # 2d distance calc from object centroid to approximately the pole of j1 rotation
                 # 2d distance calc from object centroid to approximately the pole of j1 rotation
                 r_medium = np.sqrt(np.power(x_medium - 112, 2) + np.power(
                     y_medium - (x_160mm_pxdist + (250 * x_160mm_pxdist / 160)), 2))
