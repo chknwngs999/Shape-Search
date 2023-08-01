@@ -6,6 +6,23 @@ from serial.tools import list_ports
 import time
 import pydobot
 
+
+def draw_text(img, text, pos,
+              font=cv2.FONT_HERSHEY_SIMPLEX,
+              font_scale=1,
+              font_thickness=2,
+              text_color=(255, 255, 255),
+              text_color_bg=(0, 0, 0)
+              ):
+
+    x, y = pos
+    text_size, _ = cv2.getTextSize(text, font, font_scale, font_thickness)
+    text_w, text_h = text_size
+    cv2.rectangle(img, pos, (x + text_w, y + text_h), text_color_bg, -1)
+    cv2.putText(img, text, (x, y + text_h + font_scale - 1),
+                font, font_scale, text_color, font_thickness)
+
+    return text_size
 # Get cameras function from utils.py in RETA
 
 
@@ -142,7 +159,8 @@ def generate_frames(mask: "bool" = False):
             for contour in contours:  # Compile large contours
                 approx_sides = cv2.approxPolyDP(
                     contour, 0.02 * cv2.arcLength(contour, True), True)
-                if len(approx_sides) == 4:
+                filter_shapes = [3, 4, 5]
+                if len(approx_sides) in filter_shapes:
                     area = cv2.contourArea(contour)
                     if area <= maxArea + maxArea and area >= maxArea - maxArea:  # If contour is within area boundaries
                         (x, y, w, h) = cv2.boundingRect(contour)
@@ -154,6 +172,8 @@ def generate_frames(mask: "bool" = False):
                         dist = np.sqrt(np.power(x_medium - 112, 2) +
                                        np.power(y_medium - old_y_center, 2))
                         largeContourPairs.append((contour, dist))
+                        draw_text(frame, str(len(approx_sides)),
+                                  (x_medium, y_medium))
                         found = False
             largeContourPairs = sorted(
                 largeContourPairs, key=lambda largeContourPairs: largeContourPairs[1])  # Sort by dist
