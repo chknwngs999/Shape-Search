@@ -72,8 +72,8 @@ def generate_frames(mask: "bool" = False):
     '''
     camera = cv2.VideoCapture(0)
     # Make resolution simpler to boost performance
-    camera.set(3, 480)  # switch width from 640 to 480
-    camera.set(4, 320)  # switch height from 480 to 320
+    # camera.set(3, 480)  # switch width from 640 to 480
+    # camera.set(4, 320)  # switch height from 480 to 320
 
     _, frame = camera.read()
     rows, cols, _ = frame.shape  # rows, cols, channels
