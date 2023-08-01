@@ -112,7 +112,7 @@ def generate_frames(mask: "bool" = False):
         else:
             frame = cv2.blur(frame, (3, 3))
             # crops frames so that top of mat can easily be adjusted to fit snugly in frame
-            frame = frame[5:, 63:287]
+            # frame = frame[5:, 63:287]
             frame = cv2.bilateralFilter(frame, 9, 75, 75)
             gray_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
