@@ -4,7 +4,29 @@
 import cv2
 import numpy as np
 
+# https://stackoverflow.com/questions/60674501/how-to-make-black-background-in-cv2-puttext-with-python-opencv
+
+
+def draw_text(img, text, pos,
+              font=cv2.FONT_HERSHEY_SIMPLEX,
+              font_scale=1,
+              font_thickness=2,
+              text_color=(255, 255, 255),
+              text_color_bg=(0, 0, 0)
+              ):
+
+    x, y = pos
+    text_size, _ = cv2.getTextSize(text, font, font_scale, font_thickness)
+    text_w, text_h = text_size
+    cv2.rectangle(img, pos, (x + text_w, y + text_h), text_color_bg, -1)
+    cv2.putText(img, text, (x, y + text_h + font_scale - 1),
+                font, font_scale, text_color, font_thickness)
+
+    return text_size
+
+
 vid = cv2.VideoCapture(0)
+
 
 while True:
     ret, frame = vid.read()
@@ -36,7 +58,7 @@ while True:
             contour, 0.02 * cv2.arcLength(contour, True), True)
 
         # filter for quadrilaterals
-        filter_shapes = [4]
+        filter_shapes = [3, 4, 5]
         if len(approx_sides) in filter_shapes:
             # using drawContours() function
             cv2.drawContours(frame, [contour], 0, (0, 0, 255), 3)
@@ -49,8 +71,7 @@ while True:
                 y = int(M['m01']/M['m00'])
 
                 # putting shape name at center of each shape
-                cv2.putText(frame, str(len(approx_sides)), (x, y),
-                            cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 255, 255), 2)
+                draw_text(frame, str(len(approx_sides)), (x, y))
 
     cv2.imshow('frame', frame)
     """cv2.imshow('gray', gray)
