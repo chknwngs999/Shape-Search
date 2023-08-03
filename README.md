@@ -1,16 +1,15 @@
 Files Included
 
 main.py
+
 dobot-shape-tracker-overhead/overhead_shape.py
 
 Problems
 
-camera positioning
+camera positioning consistency
 
 actual shape selection (place into cups like elvin) (working? ish?)
 
-contrast reliance
+webcam quality? —> only bad in dobot overhead code
 
-webcam quality —> only in dobot overhead code
-
-lighting? kind of but not really
+lighting and contrast reliance - only detects extremeley light objects on dark baackgrounds and vice versa, not really for intermediates
