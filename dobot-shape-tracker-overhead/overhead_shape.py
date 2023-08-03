@@ -162,6 +162,7 @@ def generate_frames(mask: "bool" = False):
                 filter_shapes = [3, 4, 5]
                 if len(approx_sides) in filter_shapes:
                     area = cv2.contourArea(contour)
+                    cv2.drawContours(frame, [contour], 0, (0, 0, 255), 3)
                     if area <= maxArea + maxArea and area >= maxArea - maxArea:  # If contour is within area boundaries
                         (x, y, w, h) = cv2.boundingRect(contour)
                         # middle line must be int since pixels are ints
