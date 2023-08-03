@@ -79,6 +79,9 @@ def index():
     return render_template('index.html')
 
 
+sides_picked = 0
+
+
 def generate_frames(mask: "bool" = False):
     '''
     Feed function int to select camera for cv2 to open
@@ -112,10 +115,6 @@ def generate_frames(mask: "bool" = False):
     found = False
     scan = 0  # Once no objects appear as targets, increment by 1 to perform a total of 4 scans
     scan_frames = 3  # Frame buffer used for scanning
-
-    # Refer to this for post for how to input colors in HSV format: https://stackoverflow.com/questions/10948589/choosing-the-correct-upper-and-lower-hsv-boundaries-for-color-detection-withcv
-    low_color = np.array([161, 155, 84])  # Red in HSV format
-    high_color = np.array([179, 255, 255])
 
     frame_num = 0
 
@@ -159,7 +158,7 @@ def generate_frames(mask: "bool" = False):
             for contour in contours:  # Compile large contours
                 approx_sides = cv2.approxPolyDP(
                     contour, 0.02 * cv2.arcLength(contour, True), True)
-                filter_shapes = [3, 4, 5]
+                filter_shapes = [3, 4]
                 if len(approx_sides) in filter_shapes:
                     area = cv2.contourArea(contour)
                     cv2.drawContours(frame, [contour], 0, (0, 0, 255), 3)
@@ -176,6 +175,7 @@ def generate_frames(mask: "bool" = False):
                         draw_text(frame, str(len(approx_sides)),
                                   (x_medium, y_medium))
                         found = False
+                        sides_picked = len(approx_sides)
             largeContourPairs = sorted(
                 largeContourPairs, key=lambda largeContourPairs: largeContourPairs[1])  # Sort by dist
             # Now create crosshair to home in on object
@@ -254,7 +254,6 @@ def grab():
     grabbing function run while frame generator passes 
     in order to yield frames while grabbing is occurring
     '''
-    global color
     x, y, z, r, j1, j2, j3, j4 = device.pose()
     device.grip(False)
     device.move_to(x=x, y=y, z=-24, r=r)
@@ -263,6 +262,16 @@ def grab():
     time.sleep(1)
     device.move_to(x=x, y=y, z=15, r=r)
     device.rotate_joint(j1=80, j2=30, j3=0, j4=0)
+
+    if sides_picked == 3:
+        device.rotate_joint(j1=85, j2=30, j3=0, j4=0)
+        print('3 sides')
+    elif sides_picked == 4:
+        device.rotate_joint(j1=65, j2=30, j3=0, j4=0)
+        print('4 sides')
+    else:
+        device.rotate_joint(j1=70, j2=30, j3=0, j4=0)
+        print('5 sides')
     time.sleep(1)
     device.grip(False)
     time.sleep(1)
