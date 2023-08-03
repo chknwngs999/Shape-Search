@@ -1,8 +1,0 @@
-main.py
-    see if blur is useful on cameras / change blur
-    play around with findContours function
-
-dobot-shape-tracker-overhead
-    show contours on video feed
-    get shape tracker to filter for quadrilaterals (editable area of code?)
-    pickup shape
