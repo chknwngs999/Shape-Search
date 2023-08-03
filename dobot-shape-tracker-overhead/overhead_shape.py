@@ -47,7 +47,7 @@ print("available cameras: ", available_cams)
 port = available_ports[0].device  # DOBOT PORT NAME: /dev/ttyACM0
 device = pydobot.Dobot(port=port, verbose=False)
 device.speed(velocity=60, acceleration=60)
-time.sleep(5)
+time.sleep(2)
 
 # App
 app = Flask(__name__)
