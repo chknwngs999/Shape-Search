@@ -127,7 +127,7 @@ def generate_frames(mask: "bool" = False):
             break
         else:
             # crops frames so that top of mat can easily be adjusted to fit snugly in frame
-            frame = frame[5:, 63:287]
+            # frame = frame[5:, 63:287]
             frame = cv2.bilateralFilter(frame, 9, 75, 75)
             gray_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
@@ -207,6 +207,7 @@ def generate_frames(mask: "bool" = False):
                     # converts the image coordinates to Dobot coordinates
                     to_x = 410 - ((160/x_160mm_pxdist) * y_medium)
                     to_y = (180/112) * (112 - x_medium)
+                    sides_picked = len(approx_sides)
                     # print(to_x, to_y)
                     device.move_to(x=to_x, y=to_y, z=0, r=r1, wait=True)
                     grab()
