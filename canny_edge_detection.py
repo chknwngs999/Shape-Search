@@ -14,19 +14,19 @@ def detect_shape(contour):
     num_vertices = len(approx)
 
     if num_vertices == 3:
-        return "Triangle"
+        return "3"
     elif num_vertices == 4:
         # Check if the shape is a rectangle or square
         x, y, w, h = cv2.boundingRect(approx)
         aspect_ratio = float(w) / h
         if 0.95 <= aspect_ratio <= 1.05:
-            return "Square"
+            return "4s"
         else:
-            return "Rectangle"
+            return "4r"
     elif num_vertices == 5:
-        return "Pentagon"
+        return "5"
     else:
-        return "Unknown"
+        return "?"
 
 
 cap = cv2.VideoCapture(0)
